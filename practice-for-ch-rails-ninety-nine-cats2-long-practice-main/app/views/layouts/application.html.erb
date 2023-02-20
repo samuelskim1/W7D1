@@ -11,6 +11,14 @@
     <%= stylesheet_link_tag "application" %>
   </head>
 
+  <header> 
+    <% if logged_in? %>
+    <form action='<%= session_url %>' method='post'>
+    <input name='_method' value='delete' type='hidden' />
+    <input type='submit' value='Logout' />
+</form>
+  </header>
+
   <body>
     <nav class="main-nav">
       <h1><a href="<%= cats_url %>">99 Cats</a></h1>
