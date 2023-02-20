@@ -10,7 +10,7 @@
 #  updated_at      :datetime         not null
 #
 class User < ApplicationRecord
-    # before_validation :ensure_session_token
+    before_validation :ensure_session_token
 
     validates :username, :password_digest, :session_token, presence: true
     validates :password, presence: true
@@ -35,5 +35,27 @@ class User < ApplicationRecord
         bcrypt_obj = BCrypt::Password.new(self.password_digest)
         bcrypt_obj.is_password?(password)
     end
+
+    def self.find_by_credentials(username, password)
+        user = User.find_by(username: username)
+        if user && user.is_password?(password)
+            return user
+        else
+            return nil
+        end
+    end
+
+    def reset_session_token!
+        self.session_token = generate_unique_session_token
+        self.save
+        self.session_token
+    end
+
+    private 
+    def ensure_session_token
+        self.session_token ||= generate_unique_session_token
+    end
+
+
 
 end
